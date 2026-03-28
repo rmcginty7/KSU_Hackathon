@@ -1,11 +1,11 @@
 import { View, Text, StyleSheet } from 'react-native';
 import NavBar from '../../components/NavBar';
 
-export default function WorkoutsScreen() {
+export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Workouts</Text>
+        <Text style={styles.title}>My Profile</Text>
       </View>
       <NavBar />
     </View>
