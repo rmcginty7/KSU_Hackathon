@@ -1,12 +1,11 @@
 import { View, Text, StyleSheet } from 'react-native';
 import NavBar from '../../components/NavBar';
 
-export default function HomeScreen() {
+export default function ProfileScreen() {
   return (
     <View style={styles.container}>
       <View style={styles.content}>
-        <Text style={styles.title}>Home Screen</Text>
-        <Text style={styles.subtitle}>You are now logged in.</Text>
+        <Text style={styles.title}>My Profile</Text>
       </View>
       <NavBar />
     </View>
@@ -27,10 +26,5 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: '700',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 20,
   },
 });
