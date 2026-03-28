@@ -5,7 +5,7 @@ const bcrypt = require('bcryptjs');
 // Register a new user
 router.post('/register', async (req, res) => {
   try {
-    const { userName, name, email, password } = req.body;
+    const { userName, name, email, password, dob } = req.body;
 
     const existingUser = await User.findOne({ userName });
     if (existingUser) return res.status(400).json({ error: 'Username already in use' });
@@ -17,7 +17,7 @@ router.post('/register', async (req, res) => {
     // Hash password
     const passwordHash = await bcrypt.hash(password, 10);
 
-    const user = await User.create({ userName, name, email, passwordHash });
+    const user = await User.create({ userName, name, email, passwordHash, dob });
     res.status(201).json({ message: 'User created', userId: user._id });
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -1,11 +1,12 @@
 const { Schema, model } = require('mongoose');
 
 const userSchema = new Schema({
-  userName:     { type: String, required: true, unique: true },
-  name:         { type: String, required: true },
-  email:        { type: String, required: true, unique: true },  // ← unique back here
-  passwordHash: { type: String, required: true },
-  createdAt:    { type: Date, default: Date.now },
+  userName:     { type: String, required: true, unique: true }, // Username
+  name:         { type: String, required: true }, // name
+  email:        { type: String, required: true, unique: true },  // email
+  passwordHash: { type: String, required: true }, // password (HASHED)
+  dob:          { type: Date, required: false }, // date of birth (OPTIONAL)
+  createdAt:    { type: Date, default: Date.now }, // creation date
   profile: {
     age:         Number,
     weight:      Number,
