@@ -1,11 +1,14 @@
 import { Text, View, StyleSheet } from "react-native";
+import { useRouter } from 'expo-router';
+import { useEffect } from "react";
 
 export default function Index() {
-  return (
-    <View style={styles.container}>
-      <Text>Edit src/app/index.tsx to edit this screen.</Text>
-    </View>
-  );
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace("/auth/login");
+  }, [])
+  return null;
 }
 
 const styles = StyleSheet.create({
