@@ -3,17 +3,18 @@
   "main": "expo-router/entry",
   "version": "1.0.0",
   "scripts": {
-    "start": "expo start",
+    "start": "EXPO_ROUTER_APP_ROOT=./src/app expo start",
     "reset-project": "node ./scripts/reset-project.js",
-    "android": "expo run:android",
-    "ios": "expo run:ios",
-    "web": "expo start --web",
+    "android": "EXPO_ROUTER_APP_ROOT=./src/app expo run:android",
+    "ios": "EXPO_ROUTER_APP_ROOT=./src/app expo run:ios",
+    "web": "EXPO_ROUTER_APP_ROOT=./src/app expo start --web",
     "lint": "expo lint"
   },
   "dependencies": {
     "@react-navigation/bottom-tabs": "^7.15.5",
     "@react-navigation/elements": "^2.9.10",
     "@react-navigation/native": "^7.1.33",
+    "axios": "^1.14.0",
     "expo": "55.0.10-canary-20260328-2049187",
     "expo-constants": "55.0.10-canary-20260328-2049187",
     "expo-device": "55.0.11-canary-20260328-2049187",

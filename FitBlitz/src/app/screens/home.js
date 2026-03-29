@@ -8,6 +8,15 @@ export default function Home() {
     <View style={styles.container}>
       <Text style={styles.title}>Home Screen</Text>
       <Text style={styles.subtitle}>You are now logged in.</Text>
+
+      <Pressable style={styles.backButton} onPress={() => router.push("/workouts/new")}>
+        <Text style={styles.backButtonText}>Start a new Workout</Text>
+      </Pressable>
+
+      <Pressable style={styles.backButton} onPress={() => router.push("/saved-workouts")}>
+        <Text style={styles.backButtonText}>View Saved Workouts</Text>
+      </Pressable>
+
       <Pressable style={styles.backButton} onPress={() => router.push("/auth/login")}>
         <Text style={styles.backButtonText}>Back to Login</Text>
       </Pressable>
@@ -38,6 +47,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 18,
     borderRadius: 8,
+    marginBottom: 12,
   },
   backButtonText: {
     color: "#fff",
