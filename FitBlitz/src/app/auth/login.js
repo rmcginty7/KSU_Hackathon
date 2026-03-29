@@ -20,10 +20,22 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [submitted, setSubmitted] = useState(false);
 
   const handleLogin = async () => {
-    if (!email || !password) {
-      Alert.alert('Error', 'Please fill in all fields');
+    setSubmitted(true);
+    if (!email && !password) {
+      setError("Please enter your email and password.");
+      return;
+    }
+
+    if (!email){
+      setError("Please enter your email.");
+      return;
+    }
+
+    if (!password){
+      setError("Please enter your password.");
       return;
     }
 
@@ -38,7 +50,7 @@ export default function Login() {
       const data = await response.json();
 
       if (!response.ok) {
-        setError('Login Failed', data.error || 'An error occurred');
+        setError(data.error || 'An error occurred');
         return;
       }
 
@@ -89,6 +101,9 @@ export default function Login() {
               secureTextEntry
               style={styles.input}
             />
+
+            {submitted && error ? <Text style={styles.errorText}>{error}</Text> : null}
+
             {loading ? (
               <ActivityIndicator size="large" color="#0a84ff" />
             ) : (
@@ -96,7 +111,7 @@ export default function Login() {
                 <Text style={styles.buttonText}>Login</Text>
               </TouchableOpacity>
             )}
-            <TouchableOpacity onPress={() => setModalVisible(false)}>
+            <TouchableOpacity onPress={() => { setModalVisible(false); setSubmitted(false); setError(''); }}>
               <Text style={styles.cancelText}>Cancel</Text>
             </TouchableOpacity>
           </View>
@@ -177,4 +192,12 @@ const styles = StyleSheet.create({
     color: '#888',
     fontSize: 14,
   },
+
+  errorText:{
+    color: 'red',
+    marginBottom: 8,
+    fontSize: 14,
+    textAlign: 'center',
+  },
+
 });
