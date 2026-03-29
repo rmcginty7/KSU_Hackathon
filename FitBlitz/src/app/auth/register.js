@@ -45,7 +45,7 @@ export default function Register() {
                 return;
             }
 
-            setError('John Pork is coming after you...');  // Meme - Original Msg: Account has been successfully created
+            setError('Account has been successfully created');  // Meme - Original Msg: Account has been successfully created
 
             setTimeout(() => { 
                 router.push('/auth/login'); 
