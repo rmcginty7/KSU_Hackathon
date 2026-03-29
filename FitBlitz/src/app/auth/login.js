@@ -58,7 +58,7 @@ export default function Login() {
       setModalVisible(false);
       router.replace('/screens/home');
     } catch (err) {
-      Alert.alert('Error', 'Could not connect to server');
+      setError('Could not connect to server');
       console.error(err);
     } finally {
       setLoading(false);
