@@ -1,117 +1,166 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import NavBar from '../../components/NavBar';
 
 export default function HomeScreen() {
-  const [streak, setStreak] = useState(5); // Mock data: 5-day streak
-  const [weight, setWeight] = useState('');
-  const [lastWeight, setLastWeight] = useState(185); // Mock previous weight
+  const workoutPlan = {
+    'Mon': 'Chest & Tris', 'Tue': 'Back & Bis', 'Wed': 'Rest Day', 
+    'Thu': 'Leg Day', 'Fri': 'Shoulders', 'Sat': 'Cardio', 'Sun': 'Yoga'
+  };
 
-const getGreeting = () => {
-  const hour = new Date().getHours();
-  if(hour < 12) return "Good morning!";
-  if(hour < 18) return "Good afternoon!";
-    return "Good evening!";
-};
+  const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+  const currentDayIndex = new Date().getDay(); 
+  const today = days[(currentDayIndex + 6) % 7];
 
-const handleWeightSubmit = () => {
-    if (weight) {
-      setLastWeight(parseFloat(weight));
-      setWeight('');
-      alert(`Weight updated to ${weight} lbs!`);
-    }
+  const getGreeting = () => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 18) return "Good afternoon";
+    return "Good evening";
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.content}>
-        <Text style={styles.title}>{getGreeting()}</Text>
-        <Text style={styles.subtitle}>Welcome, (username).</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView bounces={false} contentContainerStyle={styles.scrollContent}>
+        
+        {/* Header Section */}
+        <View style={styles.header}>
+          <View>
+            <Text style={styles.greetingText}>{getGreeting()},</Text>
+            <Text style={styles.greetingText}>(username)</Text>
+          </View>
+          <View style={styles.streakCircle}>
+            <Text style={styles.streakEmoji}>🔥</Text>
+            <Text style={styles.streakCount}>5 Days</Text>
+          </View>
+        </View>
 
-    <View style={styles.streakCard}>
-      <Text style={styles.streakEmoji}>🔥</Text>
-      <Text style={styles.streakText}>{streak} Day Streak!</Text>
-    </View>
+        {/* Horizontal Calendar - Mobile Optimized */}
+        <View style={styles.section}>
+          <Text style={styles.sectionHeader}>Your Week</Text>
+          <View style={styles.calendarRow}>
+            {days.map((day) => {
+              const isToday = day === today;
+              return (
+                <View key={day} style={styles.dayColumn}>
+                  <Text style={[styles.dayLabel, isToday && styles.todayLabel]}>{day}</Text>
+                  <TouchableOpacity 
+                    style={[styles.dayButton, isToday && styles.todayButton]}
+                    activeOpacity={0.7}
+                  >
+                    <View style={[styles.statusDot, isToday && styles.todayDot]} />
+                  </TouchableOpacity>
+                </View>
+              );
+            })}
+          </View>
+        </View>
 
-    <View style={styles.checkInBox}>
-      <Text style={styles.sectionTitle}>Daily Weigh-in</Text>
-      <Text style={styles.label}>Last recorded {lastWeight} lbs</Text>
-    
+        {/* Large "Do This Now" Card */}
+        <TouchableOpacity style={styles.mainActionCard} activeOpacity={0.9}>
+          <View style={styles.cardHeader}>
+            <Text style={styles.cardTag}>NEXT UP</Text>
+            <Text style={styles.cardTime}>45 MIN</Text>
+          </View>
+          <Text style={styles.cardTitle}>{workoutPlan[today]}</Text>
+          <View style={styles.progressBarBackground}>
+            <View style={styles.progressBarFill} />
+          </View>
+        </TouchableOpacity>
 
-    <View style={styles.inputRow}>
-      <TextInput style={styles.input} placeholder="Enter current weight" keyboardType="numeric" value={weight} onChangeText={setWeight}></TextInput>
-      <TouchableOpacity style={styles.button} onPress={handleWeightSubmit}>
-        <Text style={styles.buttonText}>Log</Text>
-      </TouchableOpacity>
-    </View>
-    </View>
+        {/* Quick Stats Row */}
+        <View style={styles.statsRow}>
+          <View style={[styles.statBox, { backgroundColor: '#E1F5FE' }]}>
+            <Text style={[styles.statValue, { color: '#0288D1' }]}>85%</Text>
+          </View>
+        </View>
 
+      </ScrollView>
       <NavBar />
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'space-between',
+    backgroundColor: '#F8F9FE',
   },
-  content: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 16,
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 100, // Room for NavBar
   },
-  title: {
-    fontSize: 28,
-    fontWeight: '700',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    marginBottom: 20,
-  },
-  streakCard: {
+  header: {
     flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 15,
-    borderRadius: 20,
-    elevation: 3, // Shadow for Android
-    shadowColor: '#000', // Shadow for iOS
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
     marginBottom: 30,
   },
-  streakEmoji: { fontSize: 24, marginRight: 10 },
-  streakText: { fontSize: 18, fontWeight: '600', color: '#ff4500' },
-  checkInBox: {
-    width: '100%',
-    backgroundColor: '#fff',
-    padding: 20,
-    borderRadius: 15,
-    borderWidth: 1,
-    borderColor: '#eee',
+  greetingText: { fontSize: 16, color: '#FFFFFF', fontWeight: '500' },
+  userName: { fontSize: 28, fontWeight: '800', color: '#1A1A1A' },
+  streakCircle: {
+    backgroundColor: '#FFF',
+    padding: 10,
+    borderRadius: 20,
+    flexDirection: 'row',
+    alignItems: 'center',
+    elevation: 4,
+    shadowColor: '#000',
+    shadowOpacity: 0.05,
+    shadowRadius: 10,
   },
-  sectionTitle: { fontSize: 20, fontWeight: '700', marginBottom: 10 },
-  label: { fontSize: 14, color: '#666', marginBottom: 15 },
-  inputRow: { flexDirection: 'row', gap: 10 },
-  input: {
-    flex: 1,
-    height: 45,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    paddingHorizontal: 15,
-    backgroundColor: '#fafafa',
+  streakEmoji: { fontSize: 18, marginRight: 4 },
+  streakCount: { fontWeight: '800', fontSize: 18 },
+
+  section: { marginBottom: 25 },
+  sectionHeader: { fontSize: 18, fontWeight: '700', color: '#1A1A1A', marginBottom: 15 },
+  
+  calendarRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    backgroundColor: '#FFF',
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderRadius: 24,
   },
-  button: {
-    backgroundColor: '#007AFF',
-    paddingHorizontal: 20,
+  dayColumn: { alignItems: 'center' },
+  dayLabel: { fontSize: 12, fontWeight: '600', color: '#BDBDBD', marginBottom: 8 },
+  todayLabel: { color: '#5856D6' },
+  dayButton: {
+    width: 35,
+    height: 35,
+    borderRadius: 12,
+    backgroundColor: '#F2F2F7',
     justifyContent: 'center',
-    borderRadius: 8,
+    alignItems: 'center',
   },
-  buttonText: { color: '#fff', fontWeight: 'bold' },
-  subtitle: { marginTop: 40, fontSize: 14, color: '#aaa' }
+  todayButton: { backgroundColor: '#5856D6' },
+  statusDot: { width: 4, height: 4, borderRadius: 2, backgroundColor: '#D1D1D6' },
+  todayDot: { backgroundColor: '#FFF' },
+
+  mainActionCard: {
+    backgroundColor: '#1C1C1E',
+    padding: 24,
+    borderRadius: 30,
+    marginBottom: 20,
+  },
+  cardHeader: { flexDirection: 'row', justifyContent: 'space-between', marginBottom: 15 },
+  cardTag: { color: '#5856D6', fontWeight: '800', fontSize: 12, letterSpacing: 1 },
+  cardTime: { color: '#8E8E93', fontSize: 12, fontWeight: '600' },
+  cardTitle: { color: '#FFF', fontSize: 26, fontWeight: '800', marginBottom: 20 },
+  progressBarBackground: { height: 6, backgroundColor: '#3A3A3C', borderRadius: 3, marginBottom: 10 },
+  progressBarFill: { width: '40%', height: '100%', backgroundColor: '#5856D6', borderRadius: 3 },
+  progressText: { color: '#8E8E93', fontSize: 11 },
+
+  statsRow: { flexDirection: 'row', justifyContent: 'space-between' },
+  statBox: {
+    width: '48%',
+    backgroundColor: '#FFF',
+    padding: 20,
+    borderRadius: 24,
+    alignItems: 'center',
+  },
+  statValue: { fontSize: 22, fontWeight: '800', color: '#1A1A1A' },
+  statLabel: { fontSize: 12, fontWeight: '600', color: '#7C7C7C', marginTop: 2 },
 });
