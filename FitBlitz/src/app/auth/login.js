@@ -1,19 +1,57 @@
-import React, { useState } from "react";
+import React, { useState } from 'react';
 import {
   View,
   Text,
   StyleSheet,
-  Pressable,
+  TouchableOpacity,
   Modal,
   TextInput,
-} from "react-native";
-import { useRouter } from "expo-router";
+  Alert,
+  ActivityIndicator,
+} from 'react-native';
+import { useRouter } from 'expo-router';
+
+const API_URL = 'http://localhost:3001';
 
 export default function Login() {
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleLogin = async () => {
+    if (!email || !password) {
+      Alert.alert('Error', 'Please fill in all fields');
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await fetch(`${API_URL}/api/users/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError('Login Failed', data.error || 'An error occurred');
+        return;
+      }
+
+      console.log('Logged in as:', data.name, '| ID:', data.userId);
+      setModalVisible(false);
+      router.replace('/screens/home');
+    } catch (err) {
+      Alert.alert('Error', 'Could not connect to server');
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -23,21 +61,15 @@ export default function Login() {
 
       <View style={styles.content}>
         <View style={styles.buttonContainer}>
-          <Pressable
-            style={styles.button}
-            onPress={() => setModalVisible(true)}
-          >
+          <TouchableOpacity style={styles.button} onPress={() => setModalVisible(true)}>
             <Text style={styles.buttonText}>Login</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.buttonContainer}>
-          <Pressable
-            style={styles.button}
-            onPress={() => router.push("/auth/register")}
-          >
+          <TouchableOpacity style={styles.button} onPress={() => router.push('/auth/register')}>
             <Text style={styles.buttonText}>Register</Text>
-          </Pressable>
+          </TouchableOpacity>
         </View>
 
         <Modal visible={modalVisible} animationType="slide" transparent={true}>
@@ -47,6 +79,8 @@ export default function Login() {
               onChangeText={setEmail}
               value={email}
               style={styles.input}
+              autoCapitalize="none"
+              keyboardType="email-address"
             />
             <TextInput
               placeholder="Password"
@@ -55,12 +89,16 @@ export default function Login() {
               secureTextEntry
               style={styles.input}
             />
-            <Pressable
-              style={styles.button}
-              onPress={() => router.replace("/screens/home")}
-            >
-              <Text style={styles.buttonText}>Login</Text>
-            </Pressable>
+            {loading ? (
+              <ActivityIndicator size="large" color="#0a84ff" />
+            ) : (
+              <TouchableOpacity style={styles.button} onPress={handleLogin}>
+                <Text style={styles.buttonText}>Login</Text>
+              </TouchableOpacity>
+            )}
+            <TouchableOpacity onPress={() => setModalVisible(false)}>
+              <Text style={styles.cancelText}>Cancel</Text>
+            </TouchableOpacity>
           </View>
         </Modal>
       </View>
@@ -71,70 +109,72 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     paddingTop: 50,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
   },
   header: {
     marginBottom: 24,
-    width: "100%",
-    alignItems: "center",
+    width: '100%',
+    alignItems: 'center',
     paddingHorizontal: 16,
   },
-
   title: {
     fontSize: 25,
     marginBottom: 16,
-    justifyContent: "flex-start",
   },
-
   content: {
     flex: 1,
     marginTop: 40,
-    justifyContent: "flex-start",
-    alignItems: "center",
-    width: "100%",
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    width: '100%',
     paddingHorizontal: 16,
   },
   buttonContainer: {
-    width: "100%",
+    width: '100%',
     maxWidth: 360,
-    alignSelf: "center",
-    alignItems: "center",
+    alignSelf: 'center',
+    alignItems: 'center',
     marginVertical: 8,
   },
   button: {
-    backgroundColor: "#0a84ff",
-    width: "60%",
+    backgroundColor: '#0a84ff',
+    width: '60%',
     maxWidth: 280,
     paddingVertical: 16,
     borderRadius: 12,
-    alignItems: "center",
-    justifyContent: "center",
-    alignSelf: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignSelf: 'center',
     marginVertical: 4,
   },
   buttonText: {
-    color: "white",
+    color: 'white',
     fontSize: 16,
   },
   modalContent: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "white",
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
     margin: 20,
     borderRadius: 10,
     padding: 35,
-    shadowColor: "#000",
+    shadowColor: '#000',
   },
   input: {
-    width: "60%",
+    width: '60%',
     height: 40,
-    borderColor: "gray",
+    borderColor: 'gray',
     borderWidth: 1,
     marginBottom: 12,
     paddingHorizontal: 8,
+  },
+  cancelText: {
+    marginTop: 12,
+    color: '#888',
+    fontSize: 14,
   },
 });
