@@ -38,7 +38,7 @@ export default function Register() {
             });
 
             const data = await response.json();
-            console.log('API response:', data);
+            console.log('API response: ', data);
 
             if (!response.ok) {
                 setError(data.error);
