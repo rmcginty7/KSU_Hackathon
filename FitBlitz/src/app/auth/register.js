@@ -17,10 +17,9 @@ export default function Register() {
 
     const handleRegister = async () => {
         console.log('Register button pressed');
-        // setError(''); // TEMP
 
         if (!userName || !firstName || !lastName || !email || !password || !DOB) {
-            setError('Error', 'Please fill in all fields');
+            setError('Please fill in all fields');
             return;
         }
 
@@ -42,15 +41,18 @@ export default function Register() {
             console.log('API response:', data);
 
             if (!response.ok) {
-                setError('Registration Failed', data.error || 'An error occurred');
+                setError(data.error);
                 return;
             }
 
-            setError('Success', 'Account has been successfully created!', [
-                { text: 'OK', onPress: () => router.push('/auth/login') }
-            ]);
+            setError('Account has been successfully created!');
+
+            setTimeout(() => { 
+                router.push('/auth/login'); 
+            }, 5000);
+
         } catch (err) {
-            setError('Error', 'Could not connect to server');
+            setError('Could not connect to server');
             console.error(err);
         } finally {
             setLoading(false);
